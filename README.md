@@ -106,6 +106,82 @@ These are **intentionally excluded** because they depend on paid subscriptions, 
 
 ---
 
+## 🔧 How It Works
+
+This skill is a **methodology guide for the AI agent** (Hermes Agent), not a standalone application. When you ask a legal research question, the agent follows the workflows in `SKILL.md` and calls Hermes Agent's built-in tools. Here is exactly how that works:
+
+### Tool Architecture
+
+| Tool | What it does | Works out of the box? | Notes |
+|------|-------------|----------------------|-------|
+| `delegate_task(toolsets=["web"])` | Spawns a subagent with web search capability | ✅ Yes | Primary method for case law / statute research |
+| `curl` + Federal Register API | Structured regulation data via REST API | ✅ Yes | No auth needed. Use `%5B`/`%5D` for bracket params |
+| r.jina.ai `https://r.jina.ai/URL` | Full-page markdown from any URL | ✅ Yes | Free, no key. Preferred for reading article/statute text |
+| `browser_navigate` + `browser_snapshot` | Headless Chromium page rendering | ✅ Yes | Fallback for JS-heavy or login-gated pages |
+| Hermes Agent `web_extract` | URL content extraction | ⚠️ Needs config | Requires `extract_backend` in config.yaml. **Default: DuckDuckGo (search only)** |
+| Hermes Agent `fetch_content` | Same as web_extract | ⚠️ Needs config | Same backend requirement |
+
+### The DuckDuckGo Default (Important)
+
+Hermes Agent ships with `extract_backend: ''` (empty) in its default configuration. When `web_extract` is called with an empty backend, it falls back to **DuckDuckGo** — which is a **search engine, not a page content extractor**. This means:
+
+```python
+# ❌ web_extract may return empty or error — depends on user's Hermes config
+web_extract(urls=["https://example.com/case-law"])
+
+# ✅ r.jina.always works — no config needed
+curl -sL "https://r.jina.ai/https://example.com/case-law"
+
+# ✅ Browser always works — renders the page like Chrome would
+browser_navigate("https://example.com/case-law")
+browser_snapshot(full=true)
+```
+
+**This skill does NOT recommend or depend on DuckDuckGo for content extraction.** The skill's documented workflows use:
+
+1. **r.jina.ai** as the primary extraction method (free, no API key needed)
+2. **Browser tools** (Chromium) as fallback for complex pages
+3. **Federal Register API** directly via curl for regulation data
+
+### Content Extraction Fallback Chain
+
+```
+Fetch URL content
+│
+├─ r.jina.ai reader ────────── PREFERRED
+│  curl -sL "https://r.jina.ai/<URL>"
+│  → Returns clean markdown. Free, no API key.
+│
+├─ Browser tools (Chromium) ── FALLBACK
+│  browser_navigate(url) → browser_snapshot(full=true)
+│  → For JS-heavy SPAs, login walls, complex layouts.
+│
+└─ web_extract / fetch_content ── ONLY IF CONFIGURED
+   Requires extract_backend in ~/.hermes/config.yaml
+   + corresponding API key in ~/.hermes/.env
+```
+
+### What You Need to Know Before Installing
+
+| Question | Answer |
+|----------|--------|
+| Do I need to configure anything? | **No.** Just copy the skill folder. |
+| Does DuckDuckGo affect normal operation? | **No.** This skill doesn't rely on `web_extract`. |
+| Does it work without API keys? | **Yes.** Federal Register API (free), r.jina.ai (free), browser tools (no key). |
+| Can I improve it with API keys? | **Yes.** Add CourtListener for verified case citations. |
+| What if r.jina.ai fails? | Browser tools handle any page a real browser can render. |
+
+### Where Configuration Files Live
+
+| File | Purpose | Managed by |
+|------|---------|-----------|
+| `~/.hermes/config.yaml` | Hermes Agent settings (model, tools, backends) | Hermes / User |
+| `~/.hermes/.env` | API keys and secrets | User |
+| `~/.hermes/skills/research/us-legal-research/` | This skill (SKILL.md + references) | This project |
+| `~/.hermes/sessions/` | Session transcripts | Hermes |
+
+---
+
 ## 🛠️ Installation
 
 ### Prerequisites
