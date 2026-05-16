@@ -1,18 +1,18 @@
 ---
-name: siri-us-legal-research
+name: us-legal-research
 description: |-
-  US legal research for Siri — statute, regulation, and case law research
-  methodology absorbed from claude-for-legal (Anthropic's open-source legal
-  AI repo). Uses Federal Register API, web_search, and source-verified
+  US legal research — statute, regulation, and case law research
+  methodology ported from Anthropic's claude-for-legal (Apache 2.0).
+  Uses Federal Register API, web_search, and source-verified
   citation patterns. No external dependencies.
 version: 1.0.0
-author: Siri (absorbed from claude-for-legal)
+author: copylawbot (ported from claude-for-legal by Anthropic)
 tags: [legal, research, us-law, federal-register, regulation]
 ---
 
-# Siri US Legal Research
+# US Legal Research
 
-미국 법령 연구를 위한 스킬이야. claude-for-legal 레포의 방법론을 완전 흡수했어.
+미국 법령 연구를 위한 스킬이야. [claude-for-legal](https://github.com/anthropics/claude-for-legal) 레포의 방법론을 Hermes Agent 포맷으로 이식했어.
 
 ## Available Data Sources
 

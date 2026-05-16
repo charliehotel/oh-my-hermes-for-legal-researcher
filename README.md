@@ -1,31 +1,78 @@
 # ⚖️ oh-my-hermes-for-legal
 
-**US legal research skills for [Hermes Agent](https://github.com/NousResearch/hermes-agent)** — statute, regulation, and case law research using free, no-API-key-required data sources.
+**US legal research skill for [Hermes Agent](https://github.com/NousResearch/hermes-agent)** — statute, regulation, and case law research methodology ported from [Anthropic's claude-for-legal](https://github.com/anthropics/claude-for-legal) project.
 
-> 🧠 This is a **Hermes Agent skill port** of Anthropic's [claude-for-legal](https://github.com/anthropics/claude-for-legal) project. All legal research methodology, workflows, and best practices are absorbed from the original. Licensed under **Apache 2.0**.
+> Built with **zero external dependencies** and **no API keys required**. All data sources used (Federal Register API, web search) are free and open.
 
 ---
 
-## ✨ What's Included
+## 🧬 About This Port
 
-| Skill | Description |
-|-------|-------------|
-| `research/siri-us-legal-research` | Full legal research workflow: Federal Regulation API, citation-verified case law, statute research, source-tagged output, reviewer notes |
+[claude-for-legal](https://github.com/anthropics/claude-for-legal) by [Anthropic](https://www.anthropic.com/) is an open-source reference implementation of legal AI workflows — 80+ named agents across 11+ practice-area plugins (commercial, corporate, employment, privacy, IP, litigation, regulatory, AI governance, law student, legal clinic, and a builder hub).
 
-### Workflows
+This project is a **focused methodology port** rather than a full copy. It extracts the **research and citation methodology layer** from claude-for-legal and adapts it to [Hermes Agent](https://github.com/NousResearch/hermes-agent)'s skill system — a modular SKILL.md format where each skill is a self-contained markdown file.
 
-- **Federal Regulation Research** — Search the Federal Register API (free, no key) for proposed rules, final rules, agency notices
-- **Source-Verified Citation Pattern** — Every citation tagged with provenance (`[Federal Register]`, `[web search — verify]`, etc.)
-- **Legal Document Templates** — Claim/element charts, chronology/timelines, research briefs
-- **Case Law Research** — Via `web_search` fallback (subagent delegation pattern)
-- **Goal-Integrated Research Loop** — Works with Hermes Agent's `/goal` system for long-running research objectives
+Where claude-for-legal is a **comprehensive practice-area suite** (agents, MCP connectors, scheduled watchers, practice profiles), `oh-my-hermes-for-legal` is a **laser-focused research skill** for users who need reliable, source-verified US legal research without managing multiple plugins or paid subscriptions.
 
-### Key Principles
+---
 
-- **Source attribution on every citation** — no claim without a tag
-- **Separate observations from inferences** — mark what the source says vs. what you conclude
-- **No silent supplement** — thin evidence = marked `needs-verification`
-- **Citation verification before reliance** — AI-generated citations can be fabricated
+## 📋 What Was Ported from claude-for-legal
+
+### ✅ Ported — Core Research Methodology
+
+| Concept | Original Source in claude-for-legal | Our Implementation |
+|---------|--------------------------------------|-------------------|
+| **Source attribution on every citation** | Core principle across all plugins — every claim tagged with provenance | `[Federal Register]`, `[web search — verify]`, `[model knowledge — verify]`, `[user provided]`, `[secondary source]` tags |
+| **Separate observations from inferences** | `claude-for-legal/README.md` — "mark what the source says vs. what you conclude" | Explicit distinction in all research output: source claim vs. analytical conclusion |
+| **No silent supplement** | "Thin evidence = mark `needs-verification`, never extrapolate" | `needs-verification` flag in all research outputs; gaps surfaced explicitly |
+| **Citation verification before reliance** | "AI-generated citations can be fabricated — verify every cite" | Reviewer Note at top of every output flags unverified sources |
+| **Reviewer Note pattern** | Prepend to every research deliverable — sources used, flags, currency, what to check first | Structured Reviewer Note: sources, flags, jurisdiction scope, currency check |
+| **State uncertainty explicitly** | "Every output is a draft, not a legal conclusion" | `[draft — attorney review required]` marker on every deliverable |
+
+### ✅ Ported — Legal Document Templates
+
+| Template | Original Source | Our Adaptation |
+|----------|----------------|----------------|
+| **Claim/Element Chart** | `litigation-legal` plugin — claim-chart skill | Element-by-element chart with evidence columns, strength ratings, gap list |
+| **Chronology/Timeline** | `litigation-legal` plugin — chronology-builder skill | Date-ordered event timeline with significance markers (🔴/🟡/⚪) |
+| **Research Brief** | Cross-plugin standard output format | Summary / Findings / Open Questions / Sources structure with numbered citations |
+
+### ✅ Ported — Regulatory Research Workflow
+
+| Workflow | Original Source | Our Implementation |
+|----------|----------------|----------------|
+| **Federal Regulation Search** | `regulatory-legal` plugin — `Reg Feed Watcher` agent + `On-demand Reg Check` command | Federal Register API search by keyword, agency, date range |
+| **Regulation Digest format** | `regulatory-legal` output convention — 🔴 Always material / 🟡 Review-worthy / 📝 FYI | Same triage format with effective dates, comment deadlines, relevance assessment |
+| **Agency-specific search** | `regulatory-legal` plugin — agency configurations | Slugs for 8+ agencies (FTC, SEC, CFPB, DOL, HHS, FCC, EPA, DOJ) |
+
+### ✅ Ported — Research Principles & Guardrails
+
+- **Disclaimer pattern** — Every output is a draft for attorney review (from claude-for-legal's `[!IMPORTANT]` callout in README)
+- **Citation fabrication awareness** — Web search results are tagged `[verify]`; no unverified claim is presented as fact (core guardrail across all claude-for-legal plugins)
+- **Research iteration loop** — Gather → Synthesize → Validate → Iterate/Deliver (mirrors the research loop in all claude-for-legal practice plugins)
+
+### ✅ Ported — Case Law Research Strategy
+
+- **Web-based case law search** via structured queries (corresponds to claude-for-legal's CourtListener MCP connector pattern, but using free web search as fallback)
+- **Source-verified citation format** — Case Name, Volume Reporter Page (Court Year) — standard Bluebook-style format used across claude-for-legal
+
+---
+
+## 🔲 Out of Scope (Not Ported)
+
+These are **intentionally excluded** because they depend on paid subscriptions, MCP connectors, platform-specific features, or are beyond the scope of a focused research skill:
+
+| Feature | In claude-for-legal | Why Not Here |
+|---------|---------------------|--------------|
+| Practice-area plugins (commercial, corporate, employment, privacy, IP, litigation, AI governance) | 11+ separate plugin directories | Hermes Agent uses a flat skill namespace; practice-specific logic belongs in separate skills |
+| MCP connectors (CourtListener, Trellis, Ironclad, DocuSign, iManage, Everlaw, Box, etc.) | `.mcp.json` per plugin + MCP server references | Requires paid subscriptions / API keys; this skill is designed for zero-cost operation |
+| Cold-start interview mechanism | `/<plugin>:cold-start-interview` writes practice profile to `CLAUDE.md` | Hermes Agent uses memory + goal tracking instead of file-based practice profiles |
+| Scheduled agents (Renewal Watcher, Docket Watcher, Reg Feed Watcher, etc.) | `agents/` directory with cron schedule in frontmatter | Use Hermes Agent's built-in cronjob system for scheduling |
+| Microsoft 365 integration (Word tracked changes, Excel workbooks) | Claude for Microsoft 365 add-in | Platform-specific; Hermes Agent is terminal/API-first |
+| Practice profile (`CLAUDE.md`) | Per-plugin config file read by every skill | Hermes Agent skills read from memory and user profile instead |
+| Legal Builder Hub (community skill discovery, trust layer, QA framework) | `legal-builder-hub` plugin | Beyond scope of a single skill; may be explored separately |
+| Managed Agent deployment (`agent.yaml`, leaf-worker subagents) | `managed-agent-cookbooks/` directory | Hermes Agent has its own deployment model |
+| Thomson Reuters CoCounsel integration | `external_plugins/cocounsel-legal/` | Paid subscription required |
 
 ---
 
@@ -34,59 +81,80 @@
 ### Prerequisites
 
 - [Hermes Agent](https://github.com/NousResearch/hermes-agent) installed and configured
-- No API keys required (Federal Register API is free and open)
+- No API keys, no paid subscriptions, no MCP servers required
 
-### Option A: Manual install (recommended)
+### Install
 
 ```bash
 git clone https://github.com/charliehotel/oh-my-hermes-for-legal.git
 mkdir -p ~/.hermes/skills/research
-cp -r oh-my-hermes-for-legal/research/siri-us-legal-research ~/.hermes/skills/research/
+cp -r oh-my-hermes-for-legal/research/us-legal-research ~/.hermes/skills/research/
 ```
 
-### Option B: Symlink (for active development)
+### Verify
 
 ```bash
-git clone https://github.com/charliehotel/oh-my-hermes-for-legal.git ~/.hermes/workspace/oh-my-hermes-for-legal
-ln -s ~/.hermes/workspace/oh-my-hermes-for-legal/research/siri-us-legal-research ~/.hermes/skills/research/siri-us-legal-research
+ls ~/.hermes/skills/research/us-legal-research/
+# Should show: SKILL.md  references/
 ```
 
 ---
 
 ## 🚀 Usage
 
-Once installed, the skill is automatically loaded by Hermes Agent when the conversation context matches. You can also load it manually:
+Once installed, Hermes Agent loads the skill automatically on relevant queries. Examples:
 
-In a Hermes Agent session, the skill is activated by the `siri-us-legal-research` skill ID. Just ask Siri to:
+**"Search the Federal Register for FTC proposed rules on AI from 2026"**
+→ Calls Federal Register API → returns structured Regulation Digest with source tags
 
-```
-"Find me the latest FTC proposed rules on AI"
-"Research trade secret case law related to open source code"
-"What are the current FCC regulations on robocalls?"
-```
+**"Find recent case law on open source code and trade secret"**
+→ Spawns a subagent with web_search → returns findings with `[verify]` tags → includes Reviewer Note
 
-### Example: Federal Regulation Search
+**"Build a chronology from these deposition dates"**
+→ Uses the chronology template with significance markers
 
-```
-=> Search the Federal Register for SEC climate disclosure rules from 2026
-```
+**"Research the legal framework for AI governance in healthcare"**
+→ Runs the full research loop: gather sources → synthesize → flag gaps → deliver with Reviewer Note
 
-The skill autonomously:
-1. Calls the Federal Register API via curl
-2. Returns a structured Regulation Digest with source tags
-3. Includes a Reviewer Note with verification flags
-
-### Example: Case Law Research
+### How the Research Loop Works
 
 ```
-=> Find recent case law on open source code and trade secret misappropriation
+   ┌─────────────┐
+   │ Set goal    │  (define the research question)
+   └──────┬──────┘
+          ▼
+   ┌─────────────┐
+   │ Gather      │  (Federal Register API + web_search)
+   └──────┬──────┘
+          ▼
+   ┌─────────────┐
+   │ Synthesize  │  (extract findings with source tags)
+   └──────┬──────┘
+          ▼
+   ┌─────────────┐     ┌─────────────┐
+   │ Validate    │────→│ More needed?│──→ loop
+   └──────┬──────┘     └─────────────┘
+          ▼ no
+   ┌─────────────┐
+   │ Deliver     │  (with Reviewer Note + source tags)
+   └─────────────┘
 ```
 
-The skill:
-1. Spawns a subagent with `web_search` access (no direct tool dependency)
-2. Searches for relevant cases
-3. Returns findings with `[web search — verify]` tags
-4. Includes a Reviewer Note flagging anything that needs manual verification
+### Output Convention
+
+Every research deliverable includes:
+
+```markdown
+> **⚠️ Reviewer note**
+> - **Sources:** Federal Register API / delegated web search
+> - **Flagged for your judgment:** [N items marked `[verify]` | none]
+> - **Currency:** [last checked date]
+> - **Before relying:** [the 1-2 things to verify first]
+
+[Research content with source tags throughout]
+
+*[draft — attorney review required]*
+```
 
 ---
 
@@ -94,11 +162,11 @@ The skill:
 
 ```
 oh-my-hermes-for-legal/
-├── LICENSE               # Apache 2.0
-├── README.md             # ← you are here
+├── LICENSE                                    # Apache 2.0
+├── README.md                                  # ← you are here
 └── research/
-    └── siri-us-legal-research/
-        ├── SKILL.md      # Main skill file — methodology & workflows
+    └── us-legal-research/
+        ├── SKILL.md                           # Main skill: methodology & workflows
         └── references/
             └── open-source-trade-secret-cases.md  # Compiled case reference
 ```
@@ -109,19 +177,29 @@ oh-my-hermes-for-legal/
 
 **Apache 2.0** — see [LICENSE](./LICENSE).
 
-This project is a **Hermes Agent skill port** derived from **[claude-for-legal](https://github.com/anthropics/claude-for-legal)** by [Anthropic](https://www.anthropic.com/). The original work is copyright Anthropic and licensed under Apache 2.0.
+This project is derived from **[claude-for-legal](https://github.com/anthropics/claude-for-legal)** by **[Anthropic](https://www.anthropic.com/)** (Apache 2.0). The original work is copyright Anthropic.
 
-Modifications and Hermes Agent adaptation by **copylawbot**.
+Portions adapted from the following claude-for-legal components:
+- Core research methodology (source attribution, verification, uncertainty disclosure)
+- Regulatory research workflow (`regulatory-legal` plugin patterns)
+- Litigation document templates (`litigation-legal` plugin — claim charts, chronologies)
+- Reviewer Note and disclaimer conventions (cross-plugin standards)
 
-> **Disclaimer:** This tool assists with legal research but does not provide legal advice. All outputs are drafts requiring attorney review. AI-generated citations may be fabricated — verify every cite against primary sources before reliance.
+Hermes Agent adaptation and additional workflows by **copylawbot**.
 
 ---
 
 ## 🤝 Contributing
 
-PRs welcome! Whether it's:
-- Adding more reference cases
-- Improving workflows for specific practice areas
-- Adding support for other free legal APIs
+PRs welcome! Areas for contribution:
+
+- Additional legal reference cases and citations
+- Support for other free legal APIs (GovInfo, Congress.gov when key available)
+- Workflow improvements for specific practice areas
+- Additional document templates
 
 Please retain the Apache 2.0 license and attribution to the original claude-for-legal project.
+
+---
+
+> **Disclaimer:** This tool assists with legal research but does not provide legal advice. All outputs are drafts requiring attorney review. AI-generated citations may be fabricated — verify every cite against primary sources before reliance.
