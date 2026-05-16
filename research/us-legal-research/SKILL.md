@@ -18,10 +18,11 @@ tags: [legal, research, us-law, federal-register, regulation]
 
 | Source | What | Auth | Cost | How to use |
 |--------|------|------|------|------------|
-| Federal Register API | US federal regulations, proposed rules, notices | None | Free | `curl` with URL encoding (see below) |
-| Web search (built-in) | Case law, statutes, secondary sources | Varies | Free* | `web_search()` tool or `delegate_task(toolsets=["web"])` |
-| r.jina.ai (recommended fallback) | Full-page content extraction for any URL | None | Free (rate-limited) | Prefix URL with `https://r.jina.ai/` |
-| Manual URLs | GovInfo, Congress.gov, court websites | Varies | Free | `fetch_content()` or browser tools |
+| Federal Register API | US federal regulations, proposed rules, notices | None | Free | `curl` with URL encoding (see Workflow 1) |
+| Web search (subagent) | Case law, statutes, secondary sources | None* | Free | `delegate_task(toolsets=["web"])` — spawns a subagent with web_search |
+| r.jina.ai reader | Full-page markdown from any URL | None | Free (rate-limited) | Prefix URL with `https://r.jina.ai/` — preferred for article/statute text |
+| Browser tools (Chromium) | JS-rendered pages, login-gated content, complex layouts | None | Free | `browser_navigate` + `browser_snapshot` — fallback for hard-to-reach pages |
+| Manual URLs | GovInfo, Congress.gov, court websites | Varies | Free | Direct browser navigation
 
 > \* `web_search` is free in most Hermes configurations. However, `web_extract` (for reading full page content) requires a configured backend (firecrawl, tavily, exa) — see **Optional API Integrations** below for the r.jina.ai zero-cost workaround.
 
@@ -292,9 +293,12 @@ The subagent gets its own `web_search` tool even when the parent session doesn't
 ### When to use which tool
 - **delegate_task(toolsets=["web"])** — FIRST CHOICE for case law, statute, and regulation research; spawns a subagent with web_search
 - **Federal Register API** (curl via terminal) — for structured federal regulation data (document type, agency, effective date, comment deadline). Lower fabrication risk than web search.
-- **r.jina.ai reader** — for reading specific articles, statutes, or regulatory text pages after the subagent returns URLs. Prefix with `https://r.jina.ai/` to get clean markdown. Free, no API key needed.
+- **r.jina.ai reader** — PREFERRED for reading specific articles, statutes, or regulatory text pages. Prefix URL with `https://r.jina.ai/` to get clean markdown. Free, no API key needed.
   > Note: Hermes Agent's built-in `fetch_content` / `web_extract` tools require a configured `extract_backend` (firecrawl, tavily, exa) in `~/.hermes/config.yaml`. Without one, they fall back to DuckDuckGo (search only, not extraction). r.jina.ai works as a zero-config drop-in replacement.
-- **Browser tools** — LAST RESORT; only when other methods fail and a specific website requires JS rendering
+- **Browser tools (Chromium)** — FALLBACK when r.jina.ai fails (JS-heavy SPAs, login-gated content, complex layouts). Uses headless Chrome/Safari/Edge to render and extract the full page.
+  - `browser_navigate(url)` → load the page
+  - `browser_snapshot(full=true)` → get full text content
+  - `browser_vision()` → screenshot + vision analysis for visual-only content
 
 ### Output conventions
 - Every research output gets a **reviewer note** at the top
