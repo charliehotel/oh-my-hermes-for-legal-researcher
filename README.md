@@ -1,4 +1,4 @@
-# ⚖️ oh-my-hermes-for-legal
+# ⚖️ oh-my-hermes-for-legal-researcher
 
 **US legal research skill for [Hermes Agent](https://github.com/NousResearch/hermes-agent)** — statute, regulation, and case law research methodology ported from [Anthropic's claude-for-legal](https://github.com/anthropics/claude-for-legal) project.
 
@@ -40,7 +40,7 @@ This skill is designed for:
 - **Practitioners** — quick initial research with verification flags surfaced
 - **AI/policy researchers** — exploring regulatory frameworks and monitoring Federal Register updates
 
-Where claude-for-legal is a comprehensive practice-area suite (agents, MCP connectors, scheduled watchers, practice profiles), `oh-my-hermes-for-legal` is a focused research skill that gets you reliable, source-verified US legal research with zero configuration and no paid subscriptions.
+Where claude-for-legal is a comprehensive practice-area suite (agents, MCP connectors, scheduled watchers, practice profiles), `oh-my-hermes-for-legal-researcher` is a focused research skill that gets you reliable, source-verified US legal research with zero configuration and no paid subscriptions.
 
 ---
 
@@ -114,9 +114,9 @@ These are **intentionally excluded** because they depend on paid subscriptions, 
 ### Install
 
 ```bash
-git clone https://github.com/charliehotel/oh-my-hermes-for-legal.git
+git clone https://github.com/charliehotel/oh-my-hermes-for-legal-researcher.git
 mkdir -p ~/.hermes/skills/research
-cp -r oh-my-hermes-for-legal/research/us-legal-research ~/.hermes/skills/research/
+cp -r oh-my-hermes-for-legal-researcher/research/us-legal-research ~/.hermes/skills/research/
 ```
 
 ### Verify
@@ -189,7 +189,7 @@ Every research deliverable includes:
 ## 📁 Project Structure
 
 ```
-oh-my-hermes-for-legal/
+oh-my-hermes-for-legal-researcher/
 ├── LICENSE                                    # Apache 2.0
 ├── README.md                                  # ← you are here
 └── research/
