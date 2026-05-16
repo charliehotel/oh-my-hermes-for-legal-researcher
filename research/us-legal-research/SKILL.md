@@ -51,24 +51,32 @@ Search the Federal Register for federal agency rules, proposed rules, and notice
 ### Search by keyword
 
 ```bash
+# Note: URL-encode brackets as %5B and %5D in shell, or use --data-urlencode
 curl -s "https://www.federalregister.gov/api/v1/documents.json?\
 per_page=20&\
 order=relevant&\
-conditions[term]=${KEYWORD}&\
-conditions[agency_ids][]=${AGENCY_ID}"
+conditions%5Bterm%5D=${KEYWORD}&\
+conditions%5Bagency_ids%5D%5B%5D=${AGENCY_ID}"
 ```
 
 ### Search by agency
 
-Common agency slugs:
-- FTC: `federal-trade-commission`
-- SEC: `securities-and-exchange-commission`
-- CFPB: `consumer-financial-protection-bureau`
-- DOL: `labor-department`
-- HHS: `health-and-human-services-department`
-- FCC: `federal-communications-commission`
-- EPA: `environmental-protection-agency`
-- DOJ: `justice-department`
+Use the agency's numeric ID (not slug). Find IDs via the agencies endpoint:
+
+```bash
+curl -s "https://www.federalregister.gov/api/v1/agencies?per_page=200" | \
+  python3 -c "import sys,json; [print(f'{a[\"id\"]}: {a[\"name\"]}') for a in json.load(sys.stdin).get('results',[]) if 'trade' in a['name'].lower()]"
+```
+
+Common agency IDs:
+- FTC: `192`
+- SEC: `466`
+- CFPB: `573`
+- DOL: `271`
+- HHS: `221`
+- FCC: `161`
+- EPA: `145`
+- DOJ: `268`
 
 ### Search by date range
 
