@@ -16,11 +16,73 @@ tags: [legal, research, us-law, federal-register, regulation]
 
 ## Available Data Sources
 
-| Source | What | Auth | How to use |
-|--------|------|------|------------|
-| Federal Register API | US federal regulations, proposed rules, notices | Free, no key | `curl -s "https://www.federalregister.gov/api/v1/documents?..."` |
-| Web search | Case law, statutes, secondary sources | Free | `web_search()` tool |
-| Manual URLs | GovInfo, Congress.gov, court websites | Varies | `fetch_content()` |
+| Source | What | Auth | Cost | How to use |
+|--------|------|------|------|------------|
+| Federal Register API | US federal regulations, proposed rules, notices | None | Free | `curl` with URL encoding (see below) |
+| Web search (built-in) | Case law, statutes, secondary sources | Varies | Free* | `web_search()` tool or `delegate_task(toolsets=["web"])` |
+| r.jina.ai (recommended fallback) | Full-page content extraction for any URL | None | Free (rate-limited) | Prefix URL with `https://r.jina.ai/` |
+| Manual URLs | GovInfo, Congress.gov, court websites | Varies | Free | `fetch_content()` or browser tools |
+
+> \* `web_search` is free in most Hermes configurations. However, `web_extract` (for reading full page content) requires a configured backend (firecrawl, tavily, exa) — see **Optional API Integrations** below for the r.jina.ai zero-cost workaround.
+
+---
+
+## Optional API Integrations
+
+The skill works **out of the box with zero API keys**. For enhanced research capabilities, these optional integrations can be configured:
+
+### r.jina.ai — Free content extraction fallback
+
+Hermes Agent's built-in `web_extract` tool requires a configured backend (firecrawl, tavily, or exa) with potential API costs. As a **free zero-config alternative**, prefix any URL with `https://r.jina.ai/`:
+
+```bash
+# Instead of web_extract which may not work:
+# Use r.jina.ai directly:
+curl -sL "https://r.jina.ai/https://www.courtlistener.com/opinion/12345"
+```
+
+This returns clean markdown with no API key needed. Use this when `web_extract` returns empty results or errors.
+
+> **For Hermes Agent users:** To make `web_extract` work natively, set `extract_backend` in your `~/.hermes/config.yaml`:
+> ```yaml
+> web:
+>   extract_backend: firecrawl  # or tavily, exa, parallel
+> ```
+> Then set the corresponding API key in `~/.hermes/.env`.
+
+### CourtListener API — Verified case law citations
+
+**Benefit:** CourtListener provides free, structured access to federal and state court opinions with verified citations. When connected, the skill can tag citations as `[CourtListener — verified]` instead of `[web search — verify]`.
+
+**Setup:**
+
+1. Register for a free API token at https://www.courtlistener.com/api/register/
+2. Set the token in your Hermes environment:
+
+```bash
+# Add to ~/.hermes/.env
+COURTLISTENER_API_KEY="your_token_here"
+```
+
+3. Then query via curl with source tagging:
+
+```bash
+# Search for AI copyright cases
+curl -s "https://www.courtlistener.com/api/rest/v4/opinions/?q=AI+copyright&court__id=cafc" \
+  -H "Authorization: Token $COURTLISTENER_API_KEY"
+```
+
+**Limitations:** Free tier has rate limits. Paid tiers remove limits. Some state courts may not be fully indexed.
+
+### Hermes Config: Where API Keys Live
+
+| File | Purpose | Example |
+|------|---------|---------|
+| `~/.hermes/.env` | API keys and secrets | `COURTLISTENER_API_KEY=..."` |
+| `~/.hermes/config.yaml` | Tool and service configuration | `web.extract_backend: firecrawl` |
+| `~/.hermes/skills/research/us-legal-research/` | This skill (SKILL.md + references) | Install via README instructions |
+
+Environment variables from `.env` are automatically loaded by Hermes Agent and available in all sessions. No restart needed — run `/reload` in session or start a new session.
 
 ---
 

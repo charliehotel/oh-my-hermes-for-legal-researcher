@@ -130,6 +130,47 @@ ls ~/.hermes/skills/research/us-legal-research/
 
 ---
 
+## 🔌 Optional API Integrations
+
+The skill works **out of the box with zero API keys**. These optional integrations enhance research quality but are not required.
+
+### r.jina.ai — Free content extraction
+
+Hermes Agent's built-in `web_extract` may not work without a configured backend (firecrawl, tavily, or exa). As a **free zero-config alternative**, prefix any URL with `https://r.jina.ai/`:
+
+```bash
+curl -sL "https://r.jina.ai/https://www.courtlistener.com/opinion/12345"
+```
+
+No API key needed. Returns clean markdown. Use this when `web_extract` returns empty results.
+
+> To make `web_extract` work natively, set in `~/.hermes/config.yaml`:
+> ```yaml
+> web:
+>   extract_backend: firecrawl  # or tavily, exa, parallel
+> ```
+> Then add the API key to `~/.hermes/.env`.
+
+### CourtListener API — Verified citations
+
+**Benefit:** Structured access to federal/state court opinions with verified citations. When connected, citations get tagged `[CourtListener — verified]` instead of `[web search — verify]`.
+
+**Setup:**
+
+```bash
+# 1. Register: https://www.courtlistener.com/api/register/
+# 2. Add to ~/.hermes/.env:
+COURTLISTENER_API_KEY="your_token_here"
+
+# 3. Query with source tagging:
+curl -s "https://www.courtlistener.com/api/rest/v4/opinions/?q=AI+copyright" \
+  -H "Authorization: Token $COURTLISTENER_API_KEY"
+```
+
+Environment variables from `.env` are auto-loaded by Hermes Agent. Run `/reload` or start a new session to pick up changes.
+
+---
+
 ## 🚀 Usage
 
 Once installed, Hermes Agent loads the skill automatically on relevant queries. Examples:
