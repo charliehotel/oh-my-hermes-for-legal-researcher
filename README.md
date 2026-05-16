@@ -8,11 +8,39 @@
 
 ## 🧬 About This Port
 
-[claude-for-legal](https://github.com/anthropics/claude-for-legal) by [Anthropic](https://www.anthropic.com/) is an open-source reference implementation of legal AI workflows — 80+ named agents across 11+ practice-area plugins (commercial, corporate, employment, privacy, IP, litigation, regulatory, AI governance, law student, legal clinic, and a builder hub).
+[claude-for-legal](https://github.com/anthropics/claude-for-legal) by [Anthropic](https://www.anthropic.com/) is a comprehensive open-source reference implementation of AI-assisted legal workflows. It spans **80+ named agents** across **11+ practice-area plugins**:
 
-This project is a **focused methodology port** rather than a full copy. It extracts the **research and citation methodology layer** from claude-for-legal and adapts it to [Hermes Agent](https://github.com/NousResearch/hermes-agent)'s skill system — a modular SKILL.md format where each skill is a self-contained markdown file.
+```
+claude-for-legal/
+├── commercial-legal/        # Contract review, renewals, escalations
+├── corporate-legal/         # M&A diligence, closing checklists
+├── employment-legal/        # Hire/term review, worker classification
+├── privacy-legal/           # DPA, DSAR, PIA
+├── product-legal/           # Launch review, marketing claims
+├── regulatory-legal/        # Reg feed watcher, policy diff
+├── ai-governance-legal/     # AI use case triage, impact assessment
+├── ip-legal/                # Trademark, FTO, DMCA, OSS
+├── litigation-legal/        # Claim charts, chronologies, deposition prep
+├── legal-clinic/            # Law school clinic workflows
+├── law-student/             # Socratic drilling, IRAC, bar prep
+├── legal-builder-hub/       # Community skill discovery & install
+│
+└── [Shared Research Methodology Layer] ← 🎯 **What we ported**
+    ├── Source tagging & citation verification patterns
+    ├── Reviewer Note conventions
+    ├── Uncertainty disclosure principles
+    └── Research loop (gather → synthesize → validate → deliver)
+```
 
-Where claude-for-legal is a **comprehensive practice-area suite** (agents, MCP connectors, scheduled watchers, practice profiles), `oh-my-hermes-for-legal` is a **laser-focused research skill** for users who need reliable, source-verified US legal research without managing multiple plugins or paid subscriptions.
+**We extracted only the shared research methodology layer from claude-for-legal — the core that underlies all 11 plugins — and ported it to a Hermes Agent skill.** Practice-domain logic (contract review, diligence, employment, privacy, etc.) is intentionally excluded. This skill focuses on one thing: **finding and analyzing statutes, regulations, case law, and legal scholarship with source-verified methodology.**
+
+This skill is designed for:
+- **Legal researchers** — searching and structuring statutes, regulations, case law
+- **Law students** — IRAC analysis, claim charts, research briefs
+- **Practitioners** — quick initial research with verification flags surfaced
+- **AI/policy researchers** — exploring regulatory frameworks and monitoring Federal Register updates
+
+Where claude-for-legal is a comprehensive practice-area suite (agents, MCP connectors, scheduled watchers, practice profiles), `oh-my-hermes-for-legal` is a focused research skill that gets you reliable, source-verified US legal research with zero configuration and no paid subscriptions.
 
 ---
 
