@@ -292,7 +292,8 @@ The subagent gets its own `web_search` tool even when the parent session doesn't
 ### When to use which tool
 - **delegate_task(toolsets=["web"])** — FIRST CHOICE for case law, statute, and regulation research; spawns a subagent with web_search
 - **Federal Register API** (curl via terminal) — for structured federal regulation data (document type, agency, effective date, comment deadline). Lower fabrication risk than web search.
-- **fetch_content** — for reading specific articles, statutes, or regulatory text pages after the subagent returns URLs
+- **r.jina.ai reader** — for reading specific articles, statutes, or regulatory text pages after the subagent returns URLs. Prefix with `https://r.jina.ai/` to get clean markdown. Free, no API key needed.
+  > Note: Hermes Agent's built-in `fetch_content` / `web_extract` tools require a configured `extract_backend` (firecrawl, tavily, exa) in `~/.hermes/config.yaml`. Without one, they fall back to DuckDuckGo (search only, not extraction). r.jina.ai works as a zero-config drop-in replacement.
 - **Browser tools** — LAST RESORT; only when other methods fail and a specific website requires JS rendering
 
 ### Output conventions
