@@ -4,7 +4,7 @@
 
 > **외부 의존성 제로, API 키 불필요.** 사용하는 모든 데이터 소스(Federal Register API, 웹 검색)는 무료로 공개되어 있습니다.
 
-> 🇰🇷 [English README](./README.md)
+> 🇺🇸 [English](./README.md)
 
 ---
 
