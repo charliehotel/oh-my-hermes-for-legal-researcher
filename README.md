@@ -4,7 +4,7 @@
 
 > Built with **zero external dependencies** and **no API keys required**. All data sources used (Federal Register API, web search) are free and open.
 
-> 🌐 [Readme in Korean (한국어)](./README.ko.md)
+> 🇰🇷 [한국어](./README.ko.md)
 
 ---
 
