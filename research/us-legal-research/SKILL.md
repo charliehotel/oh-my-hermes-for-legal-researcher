@@ -18,7 +18,7 @@ tags: [legal, research, us-law, federal-register, regulation]
 
 | Source | What | Auth | Cost | How to use |
 |--------|------|------|------|------------|
-| Federal Register API | US federal regulations, proposed rules, notices | None | Free | `curl` with URL encoding (see Workflow 1) |
+| Federal Register API | US federal regulations, proposed rules, notices | **None — open API, no key required** | Free | `curl` with URL encoding (see Workflow 1) |
 | Web search (subagent) | Case law, statutes, secondary sources | None* | Free | `delegate_task(toolsets=["web"])` — spawns a subagent with web_search |
 | r.jina.ai reader | Full-page markdown from any URL | None | Free (rate-limited) | Prefix URL with `https://r.jina.ai/` — preferred for article/statute text |
 | Browser tools (Chromium) | JS-rendered pages, login-gated content, complex layouts | None | Free | `browser_navigate` + `browser_snapshot` — fallback for hard-to-reach pages |
@@ -153,6 +153,14 @@ conditions[publication_date][lte]=2026-05-16"
 
 ### Output format for a regulation digest
 
+When processing Federal Register API results, the document object's `html_url` field already contains the **full URL**:
+
+```python
+full_url = doc['html_url']
+# Already: "https://www.federalregister.gov/documents/2026/05/18/2026-09943/..."
+# Do NOT prefix with base URL again
+```
+
 ```markdown
 ## Regulation Digest — [date]
 
@@ -163,7 +171,7 @@ conditions[publication_date][lte]=2026-05-16"
 - **Type:** [Final rule / Proposed rule / NPRM / Notice]
 - **Summary:** [One-line]
 - **Effective / Comment deadline:** [date]
-- **Link:** [FR link]
+- **Link:** `{doc.html_url}` (already a complete URL)
 - **Relevance:** [why this matters]
 
 ### 🟡 Review-worthy
