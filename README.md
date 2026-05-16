@@ -10,30 +10,30 @@
 
 ## 📌 What You Can Find
 
-### ✅ Federal Regulations (연방 규칙)
+### ✅ Federal Regulations
 Search the **Federal Register** — the official daily journal of the U.S. federal government.
 
 | Source | Coverage | How |
 |--------|----------|-----|
-| **Proposed rules** (입법예고) | Rules agencies propose for public comment | Federal Register API → structured Regulation Digest |
-| **Final rules** (최종 규칙) | Adopted rules with effective dates | Same |
-| **Notices** (고시) | Agency notices, consent orders, information collections | Same |
+| **Proposed rules** | Rules agencies propose for public comment | Federal Register API → structured Regulation Digest |
+| **Final rules** | Adopted rules with effective dates | Same |
+| **Notices** | Agency notices, consent orders, information collections | Same |
 | **NPRMs** (Notice of Proposed Rulemaking) | Formal proposals with comment deadlines | Same |
 
 **Agencies covered:** FTC, SEC, CFPB, FCC, EPA, DOJ, DOL, HHS, and 200+ others via numeric ID lookup.
 
-### ✅ Case Law (판례)
+### ✅ Case Law
 Search U.S. federal and state court opinions via web search.
 
 | Type | Coverage | Limitation |
 |------|----------|------------|
-| **Federal cases** (연방 판례) | Supreme Court, Circuit Courts, District Courts | Citations tagged `[verify]` — always cross-check |
-| **State cases** (주 판례) | Published state appellate opinions | Not all states equally covered |
+| **Federal cases** | Supreme Court, Circuit Courts, District Courts | Citations tagged `[verify]` — always cross-check |
+| **State cases** | Published state appellate opinions | Not all states equally covered |
 | **Key topic areas** | AI & copyright, open source & trade secret, privacy, antitrust | Just ask |
 
 > 🔌 **Optional:** Connect the [CourtListener API](#courtlistener-api--verified-citations) (free) for verified citations instead of `[verify]` tags.
 
-### ✅ Statutes (법률)
+### ✅ Statutes
 Search U.S. Code, public laws, and bills via web search.
 
 | Type | Coverage | Limitation |
@@ -42,7 +42,7 @@ Search U.S. Code, public laws, and bills via web search.
 | **Public Laws** | Recently enacted legislation | Via govinfo.gov |
 | **Bills** | Pending legislation | Via Congress.gov |
 
-### ✅ Secondary Sources (학술 자료)
+### ✅ Secondary Sources
 Search law review articles, legal commentary, and regulatory analysis via web search.
 
 ---
@@ -51,11 +51,11 @@ Search law review articles, legal commentary, and regulatory analysis via web se
 
 | What | Why |
 |------|-----|
-| **Non-U.S. law** (한국·EU·일본 법률) | US law only by design |
+| **Non-U.S. law** | US law only by design |
 | **Paywalled databases** (Westlaw, LexisNexis) | No paid subscriptions — free/open sources only |
-| **State-specific statutes** (주별 법률) | Web search can find them but no structured API |
-| **Very recent unreported cases** (최신 미판결 사건) | Takes time to appear in public databases |
-| **Legal advice or case strategy** (법률 자문) | Disclaimer: every output is a draft for attorney review |
+| **State-specific statutes** | Web search can find them but no structured API |
+| **Very recent unreported cases** | Takes time to appear in public databases |
+| **Legal advice or case strategy** | Disclaimer: every output is a draft for attorney review |
 
 ---
 
